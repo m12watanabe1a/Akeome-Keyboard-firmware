@@ -213,4 +213,10 @@ clean:
 #######################################
 -include $(wildcard $(BUILD_DIR)/*.d)
 
+#######################################
+# flash
+#######################################
+flash: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+	-openocd -f openocd.cfg -c "flash_elf $(BUILD_DIR)/$(TARGET).elf"
+
 # *** EOF ***
