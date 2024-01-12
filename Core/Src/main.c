@@ -29,11 +29,11 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-typedef struct keyboardHID_t
+struct keyboardHID_t
 {
   uint8_t modifiers;
   uint8_t key[7];
-} Keyboard;
+};
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -50,7 +50,7 @@ typedef struct keyboardHID_t
 
 /* USER CODE BEGIN PV */
 extern USBD_HandleTypeDef hUsbDeviceFS;
-Keyboard keyboard_status = {0};
+struct keyboardHID_t keyboard_status = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -108,16 +108,26 @@ int main(void)
     keyboard_status.key[0] = 0x04; // a
     keyboard_status.key[1] = 0x0e; // k
     keyboard_status.key[2] = 0x08; // e
-    keyboard_status.key[3] = 0x12; // o
-    keyboard_status.key[4] = 0x10; // m
-    keyboard_status.key[5] = 0x08; // e
     HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&keyboard_status, sizeof(Keyboard));
+    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&keyboard_status, sizeof(struct keyboardHID_t));
+    HAL_Delay(100);
 
-    HAL_Delay(500);
-    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-    memset(keyboard_status.key, 0, sizeof(keyboard_status.key));
-    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&keyboard_status, sizeof(Keyboard));
+    keyboard_status.key[0] = 0x00;
+    keyboard_status.key[1] = 0x00;
+    keyboard_status.key[2] = 0x00;
+    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&keyboard_status, sizeof(struct keyboardHID_t));
+    HAL_Delay(100);
+
+    keyboard_status.key[0] = 0x12; // o
+    keyboard_status.key[1] = 0x10; // m
+    keyboard_status.key[2] = 0x08; // e
+    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&keyboard_status, sizeof(struct keyboardHID_t));
+    HAL_Delay(100);
+
+    keyboard_status.key[0] = 0x00;
+    keyboard_status.key[1] = 0x00;
+    keyboard_status.key[2] = 0x00;
+    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&keyboard_status, sizeof(struct keyboardHID_t));
 
     HAL_Delay(5000);
   }
