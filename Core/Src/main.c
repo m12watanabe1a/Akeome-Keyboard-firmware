@@ -29,7 +29,11 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+typedef struct keyboardHID_t
+{
+  uint8_t modifiers;
+  uint8_t key[7];
+} Keyboard;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -45,7 +49,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+extern USBD_HandleTypeDef hUsbDeviceFS;
+Keyboard keyboard_status = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -100,10 +105,21 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    keyboard_status.key[0] = 0x04; // a
+    keyboard_status.key[1] = 0x0e; // k
+    keyboard_status.key[2] = 0x08; // e
+    keyboard_status.key[3] = 0x12; // o
+    keyboard_status.key[4] = 0x10; // m
+    keyboard_status.key[5] = 0x08; // e
     HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&keyboard_status, sizeof(Keyboard));
+
     HAL_Delay(500);
     HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-    HAL_Delay(500);
+    memset(keyboard_status.key, 0, sizeof(keyboard_status.key));
+    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t *)&keyboard_status, sizeof(Keyboard));
+
+    HAL_Delay(5000);
   }
   /* USER CODE END 3 */
 }
