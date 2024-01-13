@@ -118,10 +118,18 @@ MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
 AS_DEFS =
 
 # C defines
+ifeq ($(KOTOYORO), 1)
+C_DEFS =  \
+-DUSE_HAL_DRIVER \
+-DSTM32F446xx \
+-DSTM32_THREAD_SAFE_STRATEGY=2 \
+-DKOTOYORO
+else
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
 -DSTM32F446xx \
 -DSTM32_THREAD_SAFE_STRATEGY=2
+endif
 
 
 # AS includes
