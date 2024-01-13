@@ -2,6 +2,6 @@
 ### For MacOS
 
 ```zsh
-brew install gcc-arm-embedded
+brew install gcc-arm-embedded openocd
 ```
 
